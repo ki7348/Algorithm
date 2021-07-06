@@ -8,7 +8,7 @@ start = 0
 end=max(array)
 
 result=0
-while(start<=end):
+while start<=end:
     total=0
     mid=(start+end)
     for x in array:
