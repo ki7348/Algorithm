@@ -10,4 +10,3 @@ arr.sort(key=lambda num:(num[0],num[1]))
 
 for [i, j] in arr:
     print(i, j)
-    

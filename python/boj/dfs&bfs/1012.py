@@ -1,35 +1,39 @@
+
 import sys
-from collections import deque
-
-input = sys.stdin.readline
-
-test_num = int(input())
-
-dx = [0, 0, -1, 1]
-dy = [1, -1, 0, 0]
-
-def bfs(x,y):
-    queue = deque()
-    queue.append((x,y))
-
-    while queue:
-        x, y=queue.popleft()
-        for i in range(4):
-            nx=x+dx[i]
-            ny=y+dy[i]
-            if nx < 0 or ny < 0 or nx>=n or ny>=m:
-                continue
-            if graph[nx][ny]==0:
-                continue
-            if graph[nx][ny]==1:
-                graph[nx][ny]=graph[x][y]+1
-                queue.append((nx,ny))
-    return graph[n-1][m-1]
+sys.setrecursionlimit(100000)
 
 
-for i in range(test_num):
-    n, m, l = map(int, input().split())
-    graph = []
-    for _ in range(l):
-        graph.append(list(map(int,input().split())))
+
+def dfs(x,y):
+    if x<=-1 or x>=m or y<=-1 or y>=n:
+        return False
+    if graph[x][y] == 1:
+        graph[x][y]=0
+        dfs(x-1,y)
+        dfs(x+1,y)
+        dfs(x,y+1)
+        dfs(x,y-1)
+        return True
+    return False
+
+
+case = int(sys.stdin.readline())
+for _ in range(case):
+    result = 0
+    n, m, l = map(int, sys.stdin.readline().split())
+    graph = [[0]*n for _ in range(m)]
+    for i in range(l):
+        a, b = map(int,sys.stdin.readline().split())
+        graph[b][a]=1
+    for i in range (m):
+        for j in range (n):
+            if dfs(i, j)==True:
+                result+=1
+    print(result)
     
+
+
+
+
+
+
