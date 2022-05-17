@@ -22,9 +22,6 @@ int main(){
             d[i] = min(d[i],(i/j)*d[j]+d[i%j]);
         }
     }
-    // for(int i=1;i<=n;i++){
-    //     cout << d[i] << ' ';
-    // }
-    // cout << '\n';
+
     cout << d[n] << '\n';
 }

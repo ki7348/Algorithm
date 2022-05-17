@@ -3,60 +3,54 @@
 #include <queue>
 
 using namespace std;
-
 int n,m;
-int graph[51][51];
-bool check[51][51];
+int dir[4][2] = {{-1,0},{1,0},{0,1},{0,-1}};
+char graph[601][601];
+bool check[601][601];
+int result = 0;
 queue<pair<int,int>> q;
-int dir[8][2] = { {-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1,-1}, {-1,1}, {1,1}, {1,-1} };
 
-
-void bfs(){
+void bfs(int x,int y) {
     while(!q.empty()){
         int x = q.front().first;
         int y = q.front().second;
         q.pop();
-        for(int i=0;i<8;i++){
+        for(int i=0;i<4;i++){
             int dx = x + dir[i][0];
             int dy = y + dir[i][1];
             if(dx<0 || dy<0 || dx>n-1 || dy>m-1)
                 continue;
-            if(!check[dx][dy] && graph[dx][dy]==0){
+            if(graph[dx][dy] == 'P' && !check[dx][dy]){
+                result+=1;
                 check[dx][dy] = 1;
-                graph[dx][dy] = graph[x][y] + 1;
                 q.push(make_pair(dx,dy));
+            }else if(graph[dx][dy] == 'O' && !check[dx][dy]){ 
+                q.push(make_pair(dx,dy));
+                check[dx][dy] = 1;
             }
         }
     }
 }
 
 int main(){
-    cin.tie(NULL);
-    ios::sync_with_stdio(false);
     cin >> n >> m;
     for(int i=0;i<n;i++){
         for(int j=0;j<m;j++){
-            int x;
-            cin >> x;
-            graph[i][j] = x;
+            cin >> graph[i][j];
         }
     }
-    int final = 0;
     for(int i=0;i<n;i++){
         for(int j=0;j<m;j++){
-            if(graph[i][j] == 1){
+            if(graph[i][j] == 'I'){
                 q.push(make_pair(i,j));
-                check[i][j] = 1;
+                check[i][j] =1;
+                bfs(i,j);
             }
         }
     }
-    bfs();
-    int max_elem = 0;
-    for(int i=0;i<n;i++){
-        for(int j=0;j<m;j++){
-            max_elem = max(max_elem,graph[i][j]);            
-        }
+    if(result > 0){
+        cout << result << '\n';
+    }else {
+        cout << "TT" << '\n';
     }
-    cout << max_elem - 1 << '\n';
-
 }
