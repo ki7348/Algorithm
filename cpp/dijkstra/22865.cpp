@@ -2,17 +2,17 @@
 #include <algorithm>
 #include <queue>
 #include <vector>
-#include <tuple>
-
 #define INF 1e9
-
 using namespace std;
-int n,m,a,b,c;
+int n;
+int a,b,c;
+int m;
 vector<pair<int,int>> graph[100001];
+vector<pair<int,int>> result;
 int d[100001];
-vector<int> result;
-int max_elem[100001];
-
+int d2[100001];
+int d3[100001];
+int min_elem_list[100001];
 
 void dijkstra(int start){
     priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>> pq;
@@ -34,42 +34,39 @@ void dijkstra(int start){
     }
 }
 
-int main(){
+int main() {
     cin.tie(NULL);
     ios::sync_with_stdio(false);
     cin >> n >> a >> b >> c >> m;
-    for(int i=0;i<100001;i++){
-        max_elem[i] = INF;
+    vector<int> fr;
+    fr.push_back(a);
+    fr.push_back(b);
+    fr.push_back(c);
+    for(int i=0;i<m;i++) {
+        int q,w,e;
+        cin >> q >> w >> e;
+        graph[q].push_back(make_pair(w,e));
+        graph[w].push_back(make_pair(q,e));
     }
-    for(int i=0;i<m;i++){
-        int g,e,l;
-        cin >> g >> e >> l;
-        graph[g].push_back(make_pair(e,l));
-        graph[e].push_back(make_pair(g,l));
-    }
+    vector<int> v;
     fill(d,d+100001,INF);
     dijkstra(a);
-    for(int i=1;i<=n;i++){
-        max_elem[i] = min(max_elem[i],d[i]);
-    }
-    fill(d,d+100001,INF);
+    fill(d2,d2+100001,INF);
     dijkstra(b);
-    for(int i=1;i<=n;i++){
-        max_elem[i] = min(max_elem[i],d[i]);
-    }
-    fill(d,d+100001,INF);
+    fill(d3,d3+100001,INF);
     dijkstra(c);
-    for(int i=1;i<=n;i++){
-        max_elem[i] = min(max_elem[i],d[i]);
+    for(int i=0;i<100001;i++) {
+        int min_elem = d[i] > d2[i] ? d2[i] : d[i];
+        min_elem = min(min_elem, d3[i]);
+        min_elem_list[i] = min_elem;
     }
     int result = 0;
-    for(int i=1;i<=n;i++){
-        result = max(result,max_elem[i]);
-    }
-    for(int i=1;i<=n;i++){
-        if(max_elem[i] == result){
-            cout << i << '\n';
-            return 0;
+    int val = 0;
+    for(int i=1;i<=n;i++) {
+        if(min_elem_list[i] > result) { 
+            result = min_elem_list[i];
+            val = i;
         }
     }
+    cout << val << '\n';
 }
