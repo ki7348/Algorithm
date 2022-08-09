@@ -1,63 +1,65 @@
 #include <iostream>
 #include <algorithm>
-#include <vector>
 #include <queue>
+#include <vector>
 
 using namespace std;
-
-int n,m,k;
+int m,n,k;
 int graph[101][101];
 bool check[101][101];
-int cnt = 0;
-int dir[4][2] = { {-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-queue<pair<int,int>> q;
-vector<int> v;
+int dir[4][2] = {{-1,0},{1,0},{0,1},{0,-1}};
 
-int bfs(int x, int y){
-    q.push(make_pair(x,y));
-    check[x][y] = 1;
-    int temp = 1;
+int bfs(int i,int j){
+    queue<pair<int,int>> q;
+    check[i][j] = true;
+    q.push({i,j});
+    int dist = 1;
     while(!q.empty()){
-        x = q.front().first;
-        y = q.front().second;
+        int x = q.front().first;
+        int y = q.front().second;
         q.pop();
+
         for(int i=0;i<4;i++){
             int dx = x + dir[i][0];
             int dy = y + dir[i][1];
-            if(dx<0 || dy<0 || dx>n-1 || dy>m-1)
-                continue;
-            if(!check[dx][dy] && graph[dx][dy]==0){
-                check[dx][dy] = 1;
-                q.push(make_pair(dx,dy));
-                temp++;
-            }
+
+            if(check[dx][dy]) continue;
+            if(dx > n-1 || dy > m-1 || dx < 0 || dy < 0) continue;
+
+            check[dx][dy] = true;
+            dist += 1;
+            q.push({dx,dy});
         }
     }
-    return temp;
+    return dist;
 }
 
-int main(){
+int main() {
     cin >> n >> m >> k;
-    for(int t=0;t<k;t++){
-        int a, b, c, d;
+    for(int i=0;i<k;i++){
+        int a,b,c,d;
         cin >> a >> b >> c >> d;
-        for(int i=b;i<d;i++){
-            for(int j=a;j<c;j++){
-                graph[i][j] = 1;
+        for(int j=a;j<c;j++){
+            for(int k=b;k<d;k++){
+                check[k][j] = true;
             }
         }
     }
+
+    vector<int> result;
+
     for(int i=0;i<n;i++){
         for(int j=0;j<m;j++){
-            if(graph[i][j]==0 && !check[i][j]){
-                v.push_back(bfs(i,j));
-                cnt++;
+            if(!check[i][j]){
+                result.push_back(bfs(i,j));
             }
         }
     }
-    cout << cnt << '\n';
-    sort(v.begin(),v.end());
-    for(int i=0;i<v.size();i++){
-        cout << v[i] << ' '; 
+
+    cout << result.size() << '\n';
+    sort(result.begin(),result.end());
+    for(int i=0;i<result.size();i++){
+        cout << result[i] << ' ';
     }
+    return 0;
 }

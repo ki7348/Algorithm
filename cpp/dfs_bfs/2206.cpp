@@ -1,18 +1,18 @@
 #include <iostream>
 #include <algorithm>
-#include <vector>
 #include <queue>
 
 using namespace std;
 
-struct queueProps {
-    int zindex, first_elem, second_elem;
+struct Matrix {
+    int x,y,cnt, dist;
 };
 
 int n,m;
 int graph[1001][1001];
-int visited[2][1001][1001];
-int dir[4][2] = { {-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+bool check[1001][1001][2];
+int dir[4][2] = {{-1,0},{1,0},{0,1},{0,-1}};
+bool state = false;
 
 int main() {
     cin >> n >> m;
@@ -23,33 +23,50 @@ int main() {
             graph[i][j] = temp[j] - '0';
         }
     }
-    queue<queueProps> q;
-    q.push({0,0,0});
-    visited[0][0][0] = true;
+
+    queue<Matrix> q;
+    q.push({0,0,0,1});
+    check[0][0][0] = 1;
     while(!q.empty()){
-        queueProps now = q.front();
+        Matrix cur = q.front();
         q.pop();
-        int z = now.zindex;
-        int x = now.first_elem;
-        int y = now.second_elem;
-        
+        int x = cur.x;
+        int y = cur.y;
+        int cnt = cur.cnt;
+        int dist = cur.dist;
+
         if(x == n-1 && y == m-1){
-            cout << visited[z][x][y] << '\n';
-            return 0;
+            cout << dist << '\n';
+            state = true;
+            break;
         }
+
         for(int i=0;i<4;i++){
             int dx = x + dir[i][0];
             int dy = y + dir[i][1];
-            if(dx<0 || dy<0 || dx>n-1 || dy>m-1)
+
+            if(dx > n-1 || dy > m-1 || dx < 0 || dy < 0){
                 continue;
-            if(!visited[z][dx][dy] && graph[dx][dy] == 0){
-                q.push({z,dx,dy});
-                visited[z][dx][dy] = visited[z][x][y] + 1;
-            }else if(!visited[z][dx][dy] && graph[dx][dy] == 1 && z == 0){
-                q.push({z+1,dx,dy});
-                visited[z+1][dx][dy] = visited[z][x][y] + 1;
+            }
+
+            if(check[dx][dy][cnt]){
+                continue;
+            }
+
+            if(graph[dx][dy] == 1){
+                if(cnt < 1){
+                    q.push({dx,dy,cnt+1,dist+1});
+                    check[dx][dy][cnt+1] = 1;
+                }
+            }else{
+                q.push({dx,dy,cnt,dist+1});
+                check[dx][dy][cnt] = 1;
             }
         }
+        
     }
-    cout << -1 << '\n';
+
+    if(!state){
+        cout << -1 << '\n';
+    }
 }
