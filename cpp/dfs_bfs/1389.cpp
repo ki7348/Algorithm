@@ -4,54 +4,62 @@
 #include <vector>
 
 using namespace std;
-
 int n,m;
-int graph[5001][5001];
-int check[5001];
-vector<int> v;
-queue<int> q;
+vector<int> graph[101];
 
-int bfs(int x){
-    q.push(x);
-    int temp = 0;
+int bfs(int start){
+    queue<pair<int,int>> q;
+    bool check[101];
+    fill(check, check+101, false);
+    q.push({start,0});
+    check[start] = 1;
+
+    int dist[n+1];
+    fill(dist,dist+n+1,0);
+
     while(!q.empty()){
-        x = q.front();
+        int cur = q.front().first;
+        int val = q.front().second;
         q.pop();
-        for(int i=1;i<=n;i++){
-            if(graph[x][i]!=0 && !check[i]){
-                q.push(i);
-                check[i] = check[x]+1;
-            }
+
+        dist[cur] = val;
+
+        for(int i=0;i<graph[cur].size();i++){
+            if(check[graph[cur][i]])
+                continue;
+            check[graph[cur][i]] = true;
+            q.push({graph[cur][i],val+1});
         }
+
     }
-    for(int i=0;i<5001;i++){
-        temp+=check[i];
+
+    int result = 0;
+
+    for(int i=1;i<n+1;i++){
+        result+=dist[i];
     }
-    return temp;
+    
+    return result;
 }
 
-void reset(){
-    for(int i=0;i<5001;i++){
-        check[i] = 0;
-    }
-}
-
-int main(){
+int main() {
     cin >> n >> m;
     for(int i=0;i<m;i++){
         int x,y;
         cin >> x >> y;
-        graph[x][y] = graph[y][x] = 1;
+        graph[x].push_back(y);
+        graph[y].push_back(x);
     }
-    for(int i=1;i<=n;i++){
-        v.push_back(bfs(i));
-        reset();
-    }
-    int min_elem = *min_element(v.begin(),v.end());
-    for(int i=0;i<v.size();i++){
-        if(v[i] == min_elem){
-            cout << i + 1 << '\n';
-            return 0;
+
+    int answer = 1e9;
+    int index = 0;
+
+    for(int i=1;i<n+1;i++){
+        if(answer > bfs(i)){
+            answer = bfs(i);
+            index = i;
         }
     }
+
+    cout << index << '\n';
 }
