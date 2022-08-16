@@ -10,7 +10,6 @@ vector<pair<int,int>> v;
 int main() {
     cin >> n;
     v.push_back(make_pair(0,0));
-    fill(d,d+20,0);
     for(int i=0;i<n;i++){
         int a,b;
         cin >> a >> b;
