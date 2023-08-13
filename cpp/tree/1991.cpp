@@ -1,65 +1,56 @@
-#include<iostream>
-#include<algorithm>
-#include<string>
+#include <iostream>
+#include <algorithm>
+#include <vector>
+
 using namespace std;
 
-int N;
-char P, L, R;
-int parent[26][2];
+struct Tree{
+    int left, right;
+};
 
-void preorder(char root)
-{
-    if (root == '.') return;
-    else 
-    {
-        cout << root;
-        preorder(parent[root - 'A'][0]);
-        preorder(parent[root - 'A'][1]);
+int n;
+Tree graph[27];
+
+void preOrder(char root){
+    if(root == '.'){
+        return;
     }
+    cout << root;
+    preOrder(graph[root - 'A'].left);
+    preOrder(graph[root - 'A'].right);
+};
+
+void inOrder(char root){
+    if(root == '.')
+        return;
+    inOrder(graph[root - 'A'].left);
+    cout << root;
+    inOrder(graph[root - 'A'].right);
 }
 
-void inorder(char root)
-{
-    if (root == '.') return;
-    else 
-    {
-        inorder(parent[root - 'A'][0]);
-        cout << root;
-        inorder(parent[root - 'A'][1]);
-    }
+void postOrder(char root){
+    if(root == '.')
+        return;
+    postOrder(graph[root - 'A'].left);
+    postOrder(graph[root - 'A'].right);
+    cout << root;
 }
 
-void postorder(char root)
-{
-    if (root == '.') return;
-    else 
-    {
-        postorder(parent[root - 'A'][0]);
-        postorder(parent[root - 'A'][1]);
-        cout << root;
+int main(){
+    cin >> n;
+    for(int i=0;i<n;i++){
+        char parent, left, right;
+        cin >> parent >> left >> right;
+        graph[parent - 'A'].left = left;
+        graph[parent - 'A'].right = right;
     }
-}
 
-int main()
-{
-	ios::sync_with_stdio(0);
-	cin.tie(0);
-
-	cin >> N;
-
-	for (int i = 0; i < N; i++)
-	{
-		cin >> P >> L >> R;
-		parent[P - 'A'][0] = L;
-		parent[P - 'A'][1] = R;
-	}
-
-    preorder('A');
+    preOrder('A');
     cout << '\n';
 
-    inorder('A'); 
+    inOrder('A');
     cout << '\n';
 
-    postorder('A');
+    postOrder('A');
     cout << '\n';
 }

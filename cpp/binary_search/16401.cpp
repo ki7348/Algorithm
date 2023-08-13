@@ -4,39 +4,39 @@
 
 using namespace std;
 
-vector<long long> v;
-
-int main(){
+int main() {
     cin.tie(NULL);
     ios::sync_with_stdio(false);
-    int n, k;
-    cin >> n >> k;
+    int n, m;
+    cin >> n >> m;
+    vector<long long> v;
 
-    for(int i=0;i<n;i++){
+    for(int i=0;i<m;i++){
         long long x;
         cin >> x;
         v.push_back(x);
     }
 
+    sort(v.begin(),v.end());
+
     long long start = 1;
-    long long end = *max_element(v.begin(),v.end());
+    int answer = 0;
+    long long end = v.back();
 
     while(start <= end){
         long long mid = (start + end) / 2;
-
-        int cnt = 0;
+        long long total = 0;
         for(int i=0;i<v.size();i++){
-            if(v[i] == 0){
-                continue;
-            }
-            cnt += v[i] / mid;
+            total += v[i] / mid;
         }
 
-        if(cnt >= k){
+        if(total >= n){
             start = mid + 1;
-        } else {
+            answer = mid;
+        }else{
             end = mid - 1;
         }
     }
-    cout << start - 1 << '\n';
+
+    cout << answer << '\n';
 }

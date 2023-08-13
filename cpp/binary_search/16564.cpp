@@ -9,8 +9,9 @@ vector<long long> v;
 int main(){
     cin.tie(NULL);
     ios::sync_with_stdio(false);
-    int n, k;
+    int n,k;
     cin >> n >> k;
+    long long t;
 
     for(int i=0;i<n;i++){
         long long x;
@@ -18,25 +19,23 @@ int main(){
         v.push_back(x);
     }
 
-    long long start = 1;
+    long long start = *min_element(v.begin(),v.end());
     long long end = *max_element(v.begin(),v.end());
 
     while(start <= end){
         long long mid = (start + end) / 2;
-
-        int cnt = 0;
+        long long aid = 0;
         for(int i=0;i<v.size();i++){
-            if(v[i] == 0){
-                continue;
+            if(v[i] < mid){
+                aid += mid - v[i];
             }
-            cnt += v[i] / mid;
         }
 
-        if(cnt >= k){
-            start = mid + 1;
-        } else {
+        if(aid >= k){
             end = mid - 1;
+        } else {
+            start = mid + 1;
         }
+        cout << start << ' ' << end << '\n';
     }
-    cout << start - 1 << '\n';
 }
