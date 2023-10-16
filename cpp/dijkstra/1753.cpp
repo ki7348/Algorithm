@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <queue>
+
 #define INF 1e9
 
 using namespace std;
@@ -12,6 +13,7 @@ void dijkstra(int start){
     priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
     d[start] = 0;
     pq.push({0,start});
+
     while(!pq.empty()){
         int dist = pq.top().first;
         int now = pq.top().second;
@@ -22,14 +24,18 @@ void dijkstra(int start){
         }
 
         for(int i=0;i<graph[now].size();i++){
-            int next = graph[now][i].first;
             int cost = dist + graph[now][i].second;
-            if(cost < d[next]){
-                d[next] = cost;
-                pq.push({cost, next});
+            int next = graph[now][i].first;
+
+            if(d[next] <= cost){
+                continue;
             }
+
+            d[next] = cost;
+            pq.push({cost,next});
         }
     }
+
 }
 
 int main(){
@@ -38,14 +44,16 @@ int main(){
     int k;
     cin >> k;
     for(int i=0;i<e;i++){
-        int a,b,c;
-        cin >> a >> b >>c ;
-        graph[a].push_back({b,c});
+        int u,v,w;
+        cin >> u >> v >> w;
+        graph[u].push_back({v,w});
     }
+
     fill(d,d+20001,INF);
     dijkstra(k);
+
     for(int i=1;i<=v;i++){
-        if(d[i] == INF){
+        if(d[i] == 1e9){
             cout << "INF" << '\n';
             continue;
         }
